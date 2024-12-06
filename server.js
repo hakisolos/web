@@ -25,7 +25,7 @@ app.post('/login', (req, res) => {
 });
 
 // Serve static files (login and chat pages)
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + './'));
 
 // Create HTTP server and integrate WebSocket server
 const server = http.createServer(app);
