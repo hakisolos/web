@@ -1,9 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const http = require('http');
 const WebSocket = require('ws');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Use dynamic port for Render
 
 // Store nicknames
 const nicknames = new Set();
@@ -26,8 +27,9 @@ app.post('/login', (req, res) => {
 // Serve static files (login and chat pages)
 app.use(express.static(__dirname + '/public'));
 
-// WebSocket server
-const wss = new WebSocket.Server({ port: 3001 });
+// Create HTTP server and integrate WebSocket server
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server }); // Attach WebSocket to the same server
 
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
@@ -43,7 +45,7 @@ wss.on('connection', (ws) => {
     });
 });
 
-// Start server
-app.listen(port, () => {
+// Start the server
+server.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
